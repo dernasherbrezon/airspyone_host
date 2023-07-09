@@ -125,3 +125,12 @@ add_custom_target(uninstall
     ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
 )
 endif()
+
+enable_testing()
+
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/)
+add_executable(test_iqconverter_float ${CMAKE_CURRENT_SOURCE_DIR}/test/test_iqconverter_float.c)
+target_link_libraries(test_iqconverter_float airspy-static)
+target_compile_options(test_iqconverter_float PUBLIC -O3 -mfloat-abi=hard -march=armv8-a -mfpu=neon -ftree-vectorize -ffast-math -funroll-loops -save-temps=obj -g -fverbose-asm)
+add_test(NAME test_iqconverter_float COMMAND test_iqconverter_float)
+
