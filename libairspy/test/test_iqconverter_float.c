@@ -6,7 +6,7 @@
 #include <string.h>
 
 int main(int argc, char **argv) {
-  int total_executions = 1;
+  int total_executions = 10;
   int input_size = 6000000;
   float **input = malloc(sizeof(float *) * total_executions);
   if (input == NULL) {
