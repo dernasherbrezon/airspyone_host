@@ -128,9 +128,22 @@ endif()
 
 enable_testing()
 
+set(map_TEST_GENERIC generic)
+set(map_TEST_TUNED tuned)
+
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src/)
-add_executable(test_iqconverter_float ${CMAKE_CURRENT_SOURCE_DIR}/test/test_iqconverter_float.c)
-target_link_libraries(test_iqconverter_float airspy-static)
-target_compile_options(test_iqconverter_float PUBLIC -O3 -mfloat-abi=hard -march=armv8-a -mfpu=neon -ftree-vectorize -ffast-math -funroll-loops -save-temps=obj -g -fverbose-asm)
-add_test(NAME test_iqconverter_float COMMAND test_iqconverter_float)
+foreach (TEST_TYPE TEST_GENERIC TEST_TUNED)
+    set(srcs
+            "${CMAKE_CURRENT_SOURCE_DIR}/test/test_iqconverter_float.c"
+            )
+    set(TEST_TYPE_HUMAN_FRIENDLY ${map_${TEST_TYPE}})
+    if ("${TEST_TYPE}" STREQUAL "TEST_GENERIC")
+        list(APPEND srcs "${CMAKE_CURRENT_SOURCE_DIR}/src/iqconverter_float.c")
+    else ()
+        list(APPEND srcs "${CMAKE_CURRENT_SOURCE_DIR}/src/iqconverter_float_tuned.c")
+    endif ()
+    add_executable(test_iqconverter_float_${TEST_TYPE_HUMAN_FRIENDLY} ${srcs})
+    target_compile_options(test_iqconverter_float_${TEST_TYPE_HUMAN_FRIENDLY} PUBLIC -O3 -mfloat-abi=hard -march=armv8-a -mfpu=neon -ftree-vectorize -ffast-math -funroll-loops -save-temps=obj -g -fverbose-asm)
+    add_test(NAME test_iqconverter_float_${TEST_TYPE_HUMAN_FRIENDLY} COMMAND test_iqconverter_float_${TEST_TYPE_HUMAN_FRIENDLY})
+endforeach ()
 
